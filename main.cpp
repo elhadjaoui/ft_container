@@ -1,10 +1,10 @@
 /**
  * @file main.cpp
  * @author your name (you@domain.com)
- * @brief 
+ * @brief c++ -std=c++98 main.cpp ; ./a.out
+ * 
  * @version 0.1
  * @date 2022-08-31
- * 
  * @copyright Copyright (c) 2022
  * 
  */
@@ -16,59 +16,68 @@
 #include <map>
 #include <vector>
 
-// CPP Program to demonstrate Conversion Operators
+// CPP Program to demonstrate Conversion Operators     
 #include <cmath>
 #include <memory>
 #include "./vector/random_access_iterator.hpp"
 #include "./vector/reverse_iterator.hpp"
+#include "./vector/equal.hpp"
+#include "./vector/lexicographical_compare.hpp"
 
 using namespace std;
  
-class Complex {
-private:
-    double real;
-    double imag;
- 
+class base {
 public:
-    // Default constructor
-   explicit Complex(double r = 0.0, double i = 0.0)
-        : real(r)
-        , imag(i)
+    virtual void print()
     {
+        cout << "print base class\n";
     }
- 
-    // magnitude : usual function style
-    double mag() { return getMag(); }
- 
-    // magnitude : conversion operator
-    operator double() { return getMag(); }
- 
-private:
-    // class helper to get magnitude
-    double getMag()
+  
+    void show()
     {
-        return sqrt(real * real + imag * imag);
+        cout << "show base class\n";
     }
 };
+  
+class derived : public base {
+public:
+    void print()
+    {
+        cout << "print derived class\n";
+    }
+  
+    void show()
+    {
+        cout << "show derived class\n";
+    }
+};
+  
+// is_integral example
+#include <iostream>
+#include <type_traits>
 
+bool mypredicate (int i, int j) {
+  return (i==j);
+}
+
+bool mycomp (char c1, char c2)
+{ return std::tolower(c1)<std::tolower(c2); }
 
 int main () {
-  std::vector<int> myvector;
-  for (int i=0; i<10; i++) myvector.push_back(i);
-typedef std::vector<int>::iterator iter_type;
-                                                         // ? 9 8 7 6 5 4 3 2 1 0 ?
-  iter_type from (myvector.begin());                     //   ^
-                                                         //         ------>
-  iter_type until (myvector.end());                      //                       ^
-                                                         //
-  ft::reverse_iterator<iter_type> rev_until (from);     // ^
-                                                         //         <------
-  ft::reverse_iterator<iter_type> rev_from (until); 
-//   ft::reverse_iterator<std::vector<int>::iterator> from,until;
+  char foo[]="Apple";
+  char bar[]="apartment";
 
-//  until = from;
+  std::cout << std::boolalpha;
 
-  std::cout << "myvector :" << rev_until[3] << ".\n";
+  std::cout << "Comparing foo and bar lexicographically (foo<bar):\n";
+
+  std::cout << "Using default comparison (operator<): ";
+  std::cout << ft::lexicographical_compare(foo,foo+5,bar,bar+9);
+  std::cout << '\n';
+
+  std::cout << "Using mycomp as comparison object: ";
+  std::cout << ft::lexicographical_compare(foo,foo+5,bar,bar+9,mycomp);
+  std::cout << '\n';
 
   return 0;
 }
