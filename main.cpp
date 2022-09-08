@@ -2,13 +2,12 @@
  * @file main.cpp
  * @author your name (you@domain.com)
  * @brief c++ -std=c++98 main.cpp ; ./a.out
- * 
+ *
  * @version 0.1
  * @date 2022-08-31
  * @copyright Copyright (c) 2022
- * 
+ *
  */
-
 
 #include <fstream>
 #include <iostream>
@@ -16,67 +15,43 @@
 #include <map>
 #include <vector>
 
-// CPP Program to demonstrate Conversion Operators     
+// CPP Program to demonstrate Conversion Operators
 #include <cmath>
 #include <memory>
 #include "./vector/random_access_iterator.hpp"
 #include "./vector/reverse_iterator.hpp"
 #include "./vector/equal.hpp"
 #include "./vector/lexicographical_compare.hpp"
+#include "./vector/is_integral.hpp"
+#include "./vector/enable_if.hpp"
+#include "./vector/vector.hpp"
 
 using namespace std;
- 
-class base {
-public:
-    virtual void print()
-    {
-        cout << "print base class\n";
-    }
-  
-    void show()
-    {
-        cout << "show base class\n";
-    }
-};
-  
-class derived : public base {
-public:
-    void print()
-    {
-        cout << "print derived class\n";
-    }
-  
-    void show()
-    {
-        cout << "show derived class\n";
-    }
-};
-  
-// is_integral example
+
+// enable_if example: two ways of using enable_if
 #include <iostream>
 #include <type_traits>
 
-bool mypredicate (int i, int j) {
-  return (i==j);
-}
+// 1. the return type (bool) is only valid if T is an integral type:
+#include <iostream>
+#include <vector>
 
-bool mycomp (char c1, char c2)
-{ return std::tolower(c1)<std::tolower(c2); }
+int main ()
+{
+  // constructors used in the same order as described above:
+  ft::vector<int> first;                                // empty vector of ints
+  ft::vector<int> second (4,100);                       // four ints with value 100
+  std::vector<int> test (4,100);                       // four ints with value 100
+//   ft::vector<int> third (test.begin(),test.end());  // iterating through second
+//   ft::vector<int> fourth (third);                       // a copy of third
 
-int main () {
-  char foo[]="Apple";
-  char bar[]="apartment";
+  // the iterator constructor can also be used to construct from arrays:
+  int myints[] = {16,2,77,29};
+  std::vector<int> fifth (myints, myints + sizeof(myints) / sizeof(int) );
 
-  std::cout << std::boolalpha;
-
-  std::cout << "Comparing foo and bar lexicographically (foo<bar):\n";
-
-  std::cout << "Using default comparison (operator<): ";
-  std::cout << ft::lexicographical_compare(foo,foo+5,bar,bar+9);
-  std::cout << '\n';
-
-  std::cout << "Using mycomp as comparison object: ";
-  std::cout << ft::lexicographical_compare(foo,foo+5,bar,bar+9,mycomp);
+  std::cout << "The contents of fifth are:";
+  for (std::vector<int>::iterator it = fifth.begin(); it != fifth.end(); ++it)
+    std::cout << ' ' << *it;
   std::cout << '\n';
 
   return 0;

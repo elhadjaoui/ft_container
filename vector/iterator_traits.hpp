@@ -9,9 +9,7 @@
 
 namespace ft
 {
-
     template <class T>
-
     class iterator_traits
     {
     public:
