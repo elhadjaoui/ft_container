@@ -28,30 +28,24 @@
 
 using namespace std;
 
-// enable_if example: two ways of using enable_if
-#include <iostream>
-#include <type_traits>
 
-// 1. the return type (bool) is only valid if T is an integral type:
-#include <iostream>
-#include <vector>
 
 int main ()
 {
-  // constructors used in the same order as described above:
-  ft::vector<int> first;                                // empty vector of ints
-  ft::vector<int> second (4,100);                       // four ints with value 100
-  std::vector<int> test (4,100);                       // four ints with value 100
-//   ft::vector<int> third (test.begin(),test.end());  // iterating through second
-//   ft::vector<int> fourth (third);                       // a copy of third
+  ft::vector<int> myvector;
 
-  // the iterator constructor can also be used to construct from arrays:
-  int myints[] = {16,2,77,29};
-  std::vector<int> fifth (myints, myints + sizeof(myints) / sizeof(int) );
+  // set some values (from 1 to 10)
+  for (int i=1; i<=10; i++) myvector.push_back(i);
 
-  std::cout << "The contents of fifth are:";
-  for (std::vector<int>::iterator it = fifth.begin(); it != fifth.end(); ++it)
-    std::cout << ' ' << *it;
+  // erase the 6th element
+  myvector.erase (myvector.end() - 1);
+
+  // erase the first 3 elements:
+  // myvector.erase (myvector.begin(),myvector.begin()+3);
+
+  std::cout << "myvector contains:";
+  for (unsigned i=0; i<myvector.size(); ++i)
+    std::cout << ' ' << myvector[i];
   std::cout << '\n';
 
   return 0;
