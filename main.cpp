@@ -26,27 +26,33 @@
 #include "./vector/enable_if.hpp"
 #include "./vector/vector.hpp"
 
+
 using namespace std;
-
-
 
 int main ()
 {
-  ft::vector<int> myvector;
+  int myints[] = {16,2,77,29};
+  std::vector<int> fifth (myints, myints + sizeof(myints) / sizeof(int) );
+  std::vector<int> myvector (fifth.begin(),fifth.end());
+  std::vector<int>::iterator it;
 
-  // set some values (from 1 to 10)
-  for (int i=1; i<=10; i++) myvector.push_back(i);
+  it = myvector.begin()  ;
+  // it = myvector.insert ( it , 200 );
+  // std::cout << ' ' << *it;
+  myvector.insert (it,-2,300);
 
-  // erase the 6th element
-  myvector.erase (myvector.end() - 1);
+//   // "it" no longer valid, get a new one:
+//   it = myvector.begin();
 
-  // erase the first 3 elements:
-  // myvector.erase (myvector.begin(),myvector.begin()+3);
+//   std::vector<int> anothervector (2,400);
+//   myvector.insert (it+2,anothervector.begin(),anothervector.end());
+
+//   myvector.insert (myvector.begin(), myarray, myarray+3);
 
   std::cout << "myvector contains:";
-  for (unsigned i=0; i<myvector.size(); ++i)
-    std::cout << ' ' << myvector[i];
+  for (it=myvector.begin(); it<myvector.end(); it++)
+    std::cout << ' ' << *it;
   std::cout << '\n';
-
+// system("leaks a.out");
   return 0;
 }
