@@ -205,20 +205,16 @@ namespace ft
 				while (_size < n)
 					push_back(val);
 			}
-
-
 			iterator insert(iterator position, const value_type &val)
 			{
-				int index = 0;
-				for (iterator it = begin(); it != position ; it++)
-				{
-					if (it == end())
-						break;
-					index++;
-				}
+				difference_type diff = position -  begin();
+				if (diff < 0 )
+					diff = 0;
+				if ( diff > (difference_type)_size)
+					diff = (difference_type)_size;
 				push_back(val);
 				position = begin();
-				while(index--)
+				while(diff--)
 					position++;
 				iterator it = end() - 1;
 				for (; it != position; it--)
@@ -232,80 +228,88 @@ namespace ft
 			}
 			void insert(iterator position, size_type n, const value_type &val)
 			{
-				if (n > 0)
+				difference_type diff = position -  begin();
+				if (diff < 0 )
+					diff = 0;
+				if ( diff > (difference_type)_size)
+					diff = (difference_type)_size;
+				resize(_size + n);
+				position = begin();
+				while (diff--)
+					position++;
+				iterator last = end() - 1;
+				iterator mid = end() - 1 - n;
+				
+			    for (; mid != position - 1; mid--)
 				{
-					int index = 0;
-					for (iterator it = begin(); it != position; it++)
-						index++;
-					resize(_size + n);
-					position = begin();
-					while (index--)
-						position++;
-					iterator last = end() - 1;
-					iterator mid = end() - 1 - n;
-			        for (; mid != position - 1; mid--)
-					{
-						_allocator.destroy(&(*last));
-			            _allocator.construct(&(*last), *mid);
-						last--;
-					}
-					for (; last != position - 1; last--)
-					{
-						_allocator.destroy(&(*last));
-			            _allocator.construct(&(*last), val);
-			        }
+					_allocator.destroy(&(*last));
+			        _allocator.construct(&(*last), *mid);
+					last--;
 				}
+				for (; last != position - 1; last--)
+				{
+					_allocator.destroy(&(*last));
+			        _allocator.construct(&(*last), val);
+			    }
 			}
+			
 			template <class InputIterator>
-			void insert(iterator position, InputIterator first, InputIterator last, typename enable_if<!is_integral<InputIte
+			void insert(iterator position, InputIterator first, InputIterator last, typename enable_if<!is_integral<InputIterator>::value, bool>::type = false)
 			{
-				if (typeid(typename ft::iterator_traits<InputIterator>::iterator_category) == typeid(iterator_traits::random_access_iterator_tag))
-			       {
-			           // std::cout << "here" << std::endl;
-			           difference_type diff = (last - first) + size();
-			           size_type index = 0;
-			           for (iterator it = begin(); it != position; it++)
-			               index++;
-			           // std::cout << last - first << "diff = " << diff << ";" << _capacity * 2 << std::endl;
-			           if (diff > (difference_type)capacity())
-			               (diff < (difference_type)_capacity * 2) ? reserve(_capacity * 2) : reserve(diff);
-			           insert(begin() + index, last - first, value_type());
-			           for (InputIterator it = first; it != last; it++)
-			           {
-			               position = begin() + index;
-			               _allocator.destroy(&(*position));
-			               _allocator.construct(&(*position), *it);
-			               // insert(position, *it);
-			               index++;
-			           }
-			           return;
-			       }
-				bool doubleCap = true;
-				size_type index = 0;
-				for (iterator it = begin(); it != position; it++)
-					index++;
-				for (InputIterator it = first; it != last; it++)
-				{
-					if (size() == capacity())
-					{
-						if (doubleCap)
-						{
-							reserve(size() * 2);
-							doubleCap = false;
-						}
-						else
-							reserve(size() + 1);
-					}
-					position = begin() + index;
-			           // _allocator.destroy(&(*position));
-			           // _allocator.construct(&(*position), *it);
-					insert(position, *it);
-					index++;
-				}
+        	    difference_type diff = (position - begin());
+        	    difference_type cap = (last - first) + _size;
+        	    if (diff < 0 )
+				diff = 0;
+				if ( diff > (difference_type)_size)
+					diff = (difference_type)_size;
+        	   	reserve(cap);
+        	    insert(begin() + diff, last - first, value_type());
+        	    for (InputIterator it = first; it != last; it++)
+        	    {
+        	        position = begin() + diff;
+        	        _allocator.destroy(&(*position));
+        	        _allocator.construct(&(*position), *it);
+        	        diff++;
+        	    }
 			}
 		};
-  
-}
+		template <class T, class Alloc>
+		bool operator==(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+		{
+			return lhs.size() == rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin());
+		}
+		template <class T, class Alloc>
+		bool operator!=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+		{
+			return !(lhs == rhs);
+		}
+		template <class T, class Alloc>
+		bool operator<(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+		{
+			return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+		}
+		template <class T, class Alloc>
+		bool operator<=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+		{
+			return lhs == rhs || lhs < rhs;
+		}
+		template <class T, class Alloc>
+		bool operator>(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+		{
+			return (ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()));
+		}
+		template <class T, class Alloc>
+		bool operator>=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+		{
+			return lhs == rhs || lhs > rhs;
+		}
+		template <class T, class Alloc>
+		void swap(vector<T, Alloc> &x, vector<T, Alloc> &y)
+		{
+			x.swap(y);
+		}
+
+};
 
 // private:
 // 		allocator_type	_allocator;
@@ -680,44 +684,7 @@ namespace ft
 // 		allocator_type get_allocator() const { return _allocator; }
 
 // 	};
-// 		// /* Non-member function overloads */
 
-// 		// relational operators
-// 		template <class T, class Alloc>
-// 		bool operator==(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
-// 		{
-// 			return lhs.size() == rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin());
-// 		}
-
-// 		template <class T, class Alloc>
-// 		bool operator!=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
-// 		{
-// 			return !(lhs == rhs);
-// 		}
-
-// 		template <class T, class Alloc>
-// 		bool operator<(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
-// 		{
-// 			return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
-// 		}
-
-// 		template <class T, class Alloc>
-// 		bool operator<=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
-// 		{
-// 			return lhs == rhs || lhs < rhs;
-// 		}
-
-// 		template <class T, class Alloc>
-// 		bool operator>(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
-// 		{
-// 			return (ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()));
-// 		}
-
-// 		template <class T, class Alloc>
-// 		bool operator>=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
-// 		{
-// 			return lhs == rhs || lhs > rhs;
-// 		}
 
 // 		// swap
 // 		template <class T, class Alloc>

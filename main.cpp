@@ -29,30 +29,33 @@
 
 using namespace std;
 
+// inserting into a vector
+#include <iostream>
+#include <vector>
+
 int main ()
 {
-  int myints[] = {16,2,77,29};
-  std::vector<int> fifth (myints, myints + sizeof(myints) / sizeof(int) );
-  std::vector<int> myvector (fifth.begin(),fifth.end());
-  std::vector<int>::iterator it;
+  ft::vector<int> myvector (3,100);
+  ft::vector<int>::iterator it;
 
-  it = myvector.begin()  ;
-  // it = myvector.insert ( it , 200 );
-  // std::cout << ' ' << *it;
-  myvector.insert (it,-2,300);
+  it = myvector.begin();
+  it = myvector.insert ( it , 200 );
 
-//   // "it" no longer valid, get a new one:
-//   it = myvector.begin();
+  myvector.insert (it,2,300);
 
-//   std::vector<int> anothervector (2,400);
-//   myvector.insert (it+2,anothervector.begin(),anothervector.end());
+  // "it" no longer valid, get a new one:
+  it = myvector.begin();
 
-//   myvector.insert (myvector.begin(), myarray, myarray+3);
+  ft::vector<int> anothervector (2,400);
+  myvector.insert (it+2,anothervector.begin(),anothervector.end());
+
+  int myarray [] = { 501,502,503 };
+  myvector.insert (myvector.begin(), myarray, myarray+3);
 
   std::cout << "myvector contains:";
   for (it=myvector.begin(); it<myvector.end(); it++)
     std::cout << ' ' << *it;
   std::cout << '\n';
-// system("leaks a.out");
+
   return 0;
 }
