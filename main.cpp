@@ -25,37 +25,101 @@
 #include "./vector/is_integral.hpp"
 #include "./vector/enable_if.hpp"
 #include "./vector/vector.hpp"
+#include "./stack/stack.hpp"
+#include "./map/pair.hpp"
+#include "./map/make_pair.hpp"
 
 
 using namespace std;
-
-// inserting into a vector
+// in a BST recursively.
 #include <iostream>
-#include <vector>
-
-int main ()
+using namespace std;
+ 
+class BST {
+    int data;
+    BST *left, *right;
+ 
+public:
+    // Default constructor.
+    BST();
+ 
+    // Parameterized constructor.
+    BST(int);
+ 
+    // Insert function.
+    BST* Insert(BST*, int);
+ 
+    // Inorder traversal.
+    void Inorder(BST*);
+};
+ 
+// Default Constructor definition.
+BST ::BST()
+    : data(0)
+    , left(NULL)
+    , right(NULL)
 {
-  ft::vector<int> myvector (3,100);
-  ft::vector<int>::iterator it;
-
-  it = myvector.begin();
-  it = myvector.insert ( it , 200 );
-
-  myvector.insert (it,2,300);
-
-  // "it" no longer valid, get a new one:
-  it = myvector.begin();
-
-  ft::vector<int> anothervector (2,400);
-  myvector.insert (it+2,anothervector.begin(),anothervector.end());
-
-  int myarray [] = { 501,502,503 };
-  myvector.insert (myvector.begin(), myarray, myarray+3);
-
-  std::cout << "myvector contains:";
-  for (it=myvector.begin(); it<myvector.end(); it++)
-    std::cout << ' ' << *it;
-  std::cout << '\n';
-
-  return 0;
+}
+ 
+// Parameterized Constructor definition.
+BST ::BST(int value)
+{
+    data = value;
+    left = right = NULL;
+}
+ 
+// Insert function definition.
+BST* BST ::Insert(BST* root, int value)
+{
+    if (!root) {
+        // Insert the first node, if root is NULL.
+        return new BST(value);
+    }
+ 
+    // Insert data.
+    if (value > root->data) {
+        // Insert right node data, if the 'value'
+        // to be inserted is greater than 'root' node data.
+ 
+        // Process right nodes.
+        root->right = Insert(root->right, value);
+    }
+    else if (value < root->data){
+        // Insert left node data, if the 'value'
+        // to be inserted is smaller than 'root' node data.
+ 
+        // Process left nodes.
+        root->left = Insert(root->left, value);
+    }
+ 
+    // Return 'root' node, after insertion.
+    return root;
+}
+ 
+// Inorder traversal function.
+// This gives data in sorted order.
+void BST ::Inorder(BST* root)
+{
+    if (!root) {
+        return;
+    }
+    Inorder(root->left);
+    cout << root->data << endl;
+    Inorder(root->right);
+}
+ 
+// Driver code
+int main()
+{
+    BST b, *root = NULL;
+    root = b.Insert(root, 50);
+    b.Insert(root, 30);
+    b.Insert(root, 20);
+    b.Insert(root, 40);
+    b.Insert(root, 70);
+    b.Insert(root, 60);
+    b.Insert(root, 80);
+ 
+    b.Inorder(root);
+    return 0;
 }

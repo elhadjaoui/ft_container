@@ -9,13 +9,12 @@
  * 
  */
 
-#ifndef _FT_STACK_HPP
-#define _FT_STACK_HPP
-    #include "../Vector/vector.hpp"
+#ifndef _STACK_HPP
+#define _STACK_HPP
 
+#include "../vector/vector.hpp"
 namespace ft
 {
-
     template <class T, class Container = ft::vector<T> >
     class stack
 	{
@@ -29,17 +28,12 @@ namespace ft
 
     public:
         explicit stack(const container_type &ctnr = container_type()) : _c_type(ctnr) {}
-
-        bool empty() const {return c.empty();}
-
-        size_type size() const{return c.size();}
-
-        value_type &top() { return c.back(); }
-        const value_type &top() const { return c.back(); }
-
-        void push(const value_type &val) { return c.push_back(val); }
-
-        void pop() { return c.pop_back(); }
+        bool empty() const {return _c_type.empty();}
+        size_type size() const{return _c_type.size();}
+        value_type &top() { return _c_type.back(); }
+        const value_type &top() const { return _c_type.back(); }
+        void push(const value_type &val) { return _c_type.push_back(val); }
+        void pop() { return _c_type.pop_back(); }
     };
 
     template <class T, class Container>
