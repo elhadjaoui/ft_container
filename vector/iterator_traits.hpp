@@ -3,7 +3,6 @@
 #define _ITERATOR_TRAITS_HPP_
 
 #include <iterator>
-// #include <stddef.h>
 
 // class template specialization
 

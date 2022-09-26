@@ -21,6 +21,11 @@
 #include <memory>
 #include "random_access_iterator.hpp"
 #include "reverse_iterator.hpp" 
+#include "lexicographical_compare.hpp"
+#include "is_integral.hpp"
+#include "equal.hpp"
+#include "enable_if.hpp"
+
 
 
 namespace ft

@@ -10,6 +10,7 @@
  */
 #ifndef _IS_INTEGRAL_HPP_
 #define _IS_INTEGRAL_HPP_
+
 namespace ft
 {
 

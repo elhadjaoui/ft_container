@@ -8,12 +8,12 @@
  * @copyright Copyright (c) 2022
  *
  */
-namespace ft
-{
 
 #ifndef _ENABLE_IF_HPP_
 #define _ENABLE_IF_HPP_
 
+namespace ft
+{
     template <bool Cond, class T = void>
     struct enable_if
     {

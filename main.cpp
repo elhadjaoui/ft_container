@@ -31,95 +31,27 @@
 
 
 using namespace std;
-// in a BST recursively.
+// map::begin/end
 #include <iostream>
-using namespace std;
- 
-class BST {
-    int data;
-    BST *left, *right;
- 
-public:
-    // Default constructor.
-    BST();
- 
-    // Parameterized constructor.
-    BST(int);
- 
-    // Insert function.
-    BST* Insert(BST*, int);
- 
-    // Inorder traversal.
-    void Inorder(BST*);
-};
- 
-// Default Constructor definition.
-BST ::BST()
-    : data(0)
-    , left(NULL)
-    , right(NULL)
+#include <map>
+
+int main ()
 {
-}
- 
-// Parameterized Constructor definition.
-BST ::BST(int value)
-{
-    data = value;
-    left = right = NULL;
-}
- 
-// Insert function definition.
-BST* BST ::Insert(BST* root, int value)
-{
-    if (!root) {
-        // Insert the first node, if root is NULL.
-        return new BST(value);
-    }
- 
-    // Insert data.
-    if (value > root->data) {
-        // Insert right node data, if the 'value'
-        // to be inserted is greater than 'root' node data.
- 
-        // Process right nodes.
-        root->right = Insert(root->right, value);
-    }
-    else if (value < root->data){
-        // Insert left node data, if the 'value'
-        // to be inserted is smaller than 'root' node data.
- 
-        // Process left nodes.
-        root->left = Insert(root->left, value);
-    }
- 
-    // Return 'root' node, after insertion.
-    return root;
-}
- 
-// Inorder traversal function.
-// This gives data in sorted order.
-void BST ::Inorder(BST* root)
-{
-    if (!root) {
-        return;
-    }
-    Inorder(root->left);
-    cout << root->data << endl;
-    Inorder(root->right);
-}
- 
-// Driver code
-int main()
-{
-    BST b, *root = NULL;
-    root = b.Insert(root, 50);
-    b.Insert(root, 30);
-    b.Insert(root, 20);
-    b.Insert(root, 40);
-    b.Insert(root, 70);
-    b.Insert(root, 60);
-    b.Insert(root, 80);
- 
-    b.Inorder(root);
-    return 0;
+  std::map<char,int> mymap;
+
+  mymap['b'] = 100;
+  mymap['a'] = 200;
+  mymap['c'] = 300;
+  mymap['z'] = 300;
+  mymap['n'] = 300;
+  mymap['d'] = 300;
+  mymap['k'] = 300;
+  mymap['r'] = 300;
+
+ std::map<char,int>::iterator it = mymap.begin();
+  // show content:
+  for (std::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
+    std::cout << it->first << " => " << it->second << '\n';
+
+  return 0;
 }
