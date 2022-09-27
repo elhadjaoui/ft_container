@@ -10,16 +10,28 @@
  */
 #ifndef _NODE_HPP
 #define _NODE_HPP
-
-template <class Content>
+#include <memory>
+  
+template <class Content,  class Alloc = std::allocator<Content> >
 class Node
 {
+    private :
+        typedef Alloc allocator_type;
+        allocator_type _allocator;
+
     public:
         Content *key;
-        Node *parent;
-        Node *left;
-        Node *right;
+        Node<Content> *parent;
+         Node<Content> *left;
+         Node<Content> *right;
         int height;
+
+    Node(Content cnt, Node *father) : height(1), left(NULL), parent(father), right(NULL)
+  {
+    cnt = _allocator.allocate(1);
+    _allocator.construct(key, cnt);
+  }
 };
+
 
 #endif
