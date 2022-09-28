@@ -20,16 +20,16 @@ class Node
         allocator_type _allocator;
 
     public:
-        Content *key;
+        Content *cnt;
         Node<Content> *parent;
          Node<Content> *left;
          Node<Content> *right;
         int height;
 
-    Node(Content cnt, Node *father) : height(1), left(NULL), parent(father), right(NULL)
+  Node(Content cnt, Node *father) : height(1), left(NULL), parent(father), right(NULL)
   {
     cnt = _allocator.allocate(1);
-    _allocator.construct(key, cnt);
+    _allocator.construct(cnt, cnt);
   }
 };
 
