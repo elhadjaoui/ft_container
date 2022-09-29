@@ -13,6 +13,7 @@
 #define _STACK_HPP
 
 #include "../vector/vector.hpp"
+#include "../vector/lexicographical_compare.hpp"
 namespace ft
 {
     template <class T, class Container = ft::vector<T> >
@@ -34,25 +35,25 @@ namespace ft
         const value_type &top() const { return _c_type.back(); }
         void push(const value_type &val) { return _c_type.push_back(val); }
         void pop() { return _c_type.pop_back(); }
+        container_type base(){return _c_type;}
     };
 
     template <class T, class Container>
-    bool operator==(const stack<T, Container> &lhs, const stack<T, Container> &rhs){ return lhs.c == rhs.c; }
+    bool operator==(const stack<T, Container> &lhs, const stack<T, Container> &rhs){ return lhs.base() == rhs.base(); }
+    template <class T, class Container>
+    bool operator<(const stack<T, Container> &lhs, const stack<T, Container> &rhs){ return lhs.base() < rhs.base(); }
 
     template <class T, class Container>
-    bool operator<(const stack<T, Container> &lhs, const stack<T, Container> &rhs){ return lhs.c < rhs.c; }
+    bool operator!=(const stack<T, Container> &lhs, const stack<T, Container> &rhs){ return lhs.base() != rhs.base(); }
 
     template <class T, class Container>
-    bool operator!=(const stack<T, Container> &lhs, const stack<T, Container> &rhs){ return lhs.c != rhs.c; }
+    bool operator<=(const stack<T, Container> &lhs, const stack<T, Container> &rhs){ return lhs.base() <= rhs.base(); }
 
     template <class T, class Container>
-    bool operator<=(const stack<T, Container> &lhs, const stack<T, Container> &rhs){ return lhs.c <= rhs.c; }
+    bool operator>(const stack<T, Container> &lhs, const stack<T, Container> &rhs){ return lhs.base() > rhs.base(); }
 
     template <class T, class Container>
-    bool operator>(const stack<T, Container> &lhs, const stack<T, Container> &rhs){ return lhs.c > rhs.c; }
-
-    template <class T, class Container>
-    bool operator>=(const stack<T, Container> &lhs, const stack<T, Container> &rhs){ return lhs.c >= rhs.c; }
+    bool operator>=(const stack<T, Container> &lhs, const stack<T, Container> &rhs){ return lhs.base() >= rhs.base(); }
 
 }
 #endif
