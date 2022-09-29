@@ -63,13 +63,17 @@ namespace ft
         allocator_type _allocator;
         key_compare _comare_key;
 
-        explicit map(const Compare& comp = Compare(),const Allocator& = Allocator());
+        explicit map(const Compare& comp = Compare(),const Allocator& = Allocator()) : _size(0), _my_tree(NULL), {}
         template <class InputIterator>
         map(InputIterator first, InputIterator last, const Compare& comp = Compare(), const Allocator& = Allocator());
         map(const map<Key,T,Compare,Allocator>& x);
         ~map();
-        map<Key,T,Compare,Allocator>&
-        operator=(const map<Key,T,Compare,Allocator>& x);
+        map<Key,T,Compare,Allocator>&operator=(const map<Key,T,Compare,Allocator>& x)
+        {
+          clear();
+          insert(x.begin(), x.end());
+          return *this;
+        }
         // iterators:
         iterator begin();
         const_iterator begin() const;
@@ -86,7 +90,10 @@ namespace ft
         // 23.3.1.2 element access:
         T& operator[](const key_type& x);
         // modifiers:
-        pair<iterator, bool> insert(const value_type& x);
+        pair<iterator, bool> insert(const value_type& x)
+        {
+
+        }
         iterator insert(iterator position, const value_type& x);
         template <class InputIterator>
         void insert(InputIterator first, InputIterator last);
@@ -99,8 +106,14 @@ namespace ft
         key_compare key_comp() const;
         value_compare value_comp() const;
 
-        iterator find(const key_type& x);
-        const_iterator find(const key_type& x) const;
+        iterator find(const key_type& x)
+        {
+
+        }
+        const_iterator find(const key_type& x) const
+        {
+          
+        }
         size_type count(const key_type& x) const;
         iterator lower_bound(const key_type& x);
         const_iterator lower_bound(const key_type& x) const;
