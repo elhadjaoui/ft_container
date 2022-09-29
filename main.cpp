@@ -240,6 +240,7 @@ Node* deleteNode(Node* root, int key)
             else // One child case
             *root = *temp; // Copy the contents of
                            // the non-empty child
+            // cout << "Here \n";
             free(temp);
         }
         else
@@ -334,36 +335,54 @@ Node *root = NULL;
     root = insert(root, -1);
     root = insert(root, 1);
     root = insert(root, 2);
+    // root = insert(root, 7);
+
  
     /* The constructed AVL Tree would be
-            9
-        / \
-        1 10
-        / \ \
-    0 5 11
-    / / \
-    -1 2 6
-    */
+ 
+                9
+               / \
+deleted ->  (1)  10
+             / \    \
+            0   5    11           
+           /   / \
+         -1   2   6
+         
+             ||
+             VV
+
+
+              9                                   
+             / \
+            2    10
+           / \    \
+          0   5    11
+         /     \
+       -1       6
+        */
  
     cout << "Preorder traversal of the "
             "constructed AVL tree is \n";
     preOrder(root);
  
-    root = deleteNode(root, 10);
+    root = deleteNode(root, 1);
+
  
     /* The AVL Tree after deletion of 10
-            1
+         1
         / \
-        0 9
-        / / \
-    -1 5     11
+       0   9
+      /   / \
+    -1   5   11
         / \
-        2 6
+       2   6
+       
     */
  
     cout << "\nPreorder traversal after"
          << " deletion of 10 \n";
     preOrder(root);
- 
+   
+//  system("leaks a.out");
     return 0;
 }

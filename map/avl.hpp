@@ -26,7 +26,7 @@ private:
   node_allocator _alloc_node;
   key_compare _compare_key;
 
-private:
+public:
   Node<value_type> *newNode(Content content)
   {
     Node<value_type> *node = _alloc_node.allocate(sizeof(Node<value_type>));
@@ -49,7 +49,19 @@ private:
       return 0;
     return height(N->left) - height(N->right);
   }
-
+  void _freePair(Content c)
+  {
+      _allocator.destroy(c);
+      _allocator.deallocate(c, 1);
+  }
+  void _freeNode(Node<value_type> *node)
+  {
+      if (!node)
+          return;
+      _freePair(node->cnt);
+      _node_allocator.destroy(node);
+      _node_allocator.deallocate(node, 1);
+  }
   Node<value_type> *leaf_right_node(Node<value_type> *node) const // maximum node
   {
     return !node->right ? node : leaf_right_node(node->right);
@@ -93,9 +105,9 @@ private:
   {
     if (node == NULL)
       return newNode(cnt);
-    if (_compare_key(cnt.first, (node->cnt.first))) // returns true if the first argument is considered to go before the second
+    if (_compare_key(cnt.first, (node->cnt->first))) // returns true if the first argument is considered to go before the second
       node->left = insert(node->left, node, cnt);
-    else if (_compare_key(node->cnt.first, cnt.first))
+    else if (_compare_key(node->cnt->first, cnt.first))
       node->right = insert(node->right, node, cnt);
     else
       return node;
@@ -103,7 +115,7 @@ private:
     int balanceFactor = getBalanceFactor(node);
     if (balanceFactor > 1) // left is dominant
     {
-      if (_compare_key(cnt.first, node->left->cnt.first)) // Left Left Case
+      if (_compare_key(cnt.first, node->left->cnt->first)) // Left Left Case
       {
         /*
       we can check if is left left case by comparing the height(left and right) of the left child  node or comparing the key of the inserted node and the unbalced node
@@ -117,7 +129,7 @@ private:
       */
         return rightRotate(node);
       }
-      else if (_compare_key(node->left->cnt.first, cnt.first)) // Left Right Case
+      else if (_compare_key(node->left->cnt->first, cnt.first)) // Left Right Case
       {
         /*
         we can check if is left right case by comparing the height(left and right) of the left child node or comparing the key of the inserted node and the unbalced node
@@ -136,7 +148,7 @@ private:
     }
     if (balanceFactor < -1) // right is dominant
     {
-      if (_compare_key(node->right->cnt.first, cnt.first)) // Right Right Case
+      if (_compare_key(node->right->cnt->first, cnt.first)) // Right Right Case
       {
         /*
          we can check if is right right case by comparing the height(left and right) of the right child node or comparing the key of the inserted node and the unbalced node
@@ -150,7 +162,7 @@ private:
          */
         return leftRotate(node);
       }
-      else if (_compare_key(cnt.first, node->right->cnt.first)) // Right Left Case
+      else if (_compare_key(cnt.first, node->right->cnt->first)) // Right Left Case
       {
         /*
       we can check if is right right case by comparing the height(left and right) of the right child node or comparing the key of the inserted node and the unbalced node
@@ -188,7 +200,7 @@ private:
   {
     if (root == NULL)
       return NULL;
-    if (_compare_key(key, (root->key)->first))
+    if (_compare_key(key, root->key->first))
       root->left = deleteNode(root->left, key);
     else if (_compare_key((root->key)->first, key))
       root->right = deleteNode(root->right, key);
@@ -201,21 +213,47 @@ private:
           temp = root->right;
         else
           temp = root->left;
-        if (temp == NULL)
+        if (temp == NULL)  // No child case
         {
           temp = root;
           root = NULL;
         }
-        else
+        else // One child case
           _allocater.construct(root, *temp);
+        _freeNode(temp);
       }
-      else
+      else // two child case
       {
-        Node<value_type> *temp = leaf_left_node(root->right);
+        Node<value_type> *temp = leaf_left_node(root->right); // node with two children: Get the inorder  successor (smallest in the right subtree)
         _allocater.construct(root->key, *temp->key);
         root->right = deleteNode(root->right, temp->key->first);
+        // explanation
+          /* The constructed AVL Tree would be
+ 
+                9
+               / \
+deleted ->  (1)  10
+             / \    \
+            0   5    11           
+           /   / \
+         -1   2   6
+         
+             ||        replace just the key of node (1) by the key node (2) and remove (2)  
+             VV
+
+              9                                   
+             / \
+            2    10
+           / \    \
+          0   5    11
+         /     \
+       -1       6
+        */
       }
     }
+
+     // If the tree had only one node
+    // then return
     if (root == NULL)
       return root;
     root->height = max(height(root->left), height(root->right)) + 1;
@@ -246,12 +284,12 @@ private:
       root->right->parent = root;
     return root;
   }
-  Node<value_type> *clear( Node<value_type> *root)
+  Node<value_type> *clear_tree(Node<value_type> *root)
   {
     if (!root)
       return NULL;
-    clear(root->right);
-    clear(root->left);
+    clear_tree(root->right);
+    clear_tree(root->left);
     if (root)
     {
       _allocater.destroy(root);

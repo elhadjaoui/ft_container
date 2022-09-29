@@ -22,7 +22,7 @@
 #include "bidirectional_iterator.hpp"
 #include "../vector/reverse_iterator.hpp" 
 
-
+#include "avl.hpp"
 
 namespace ft
 {
@@ -41,10 +41,8 @@ namespace ft
         typedef typename allocator_type::pointer pointer;
         typedef typename allocator_type::const_pointer const_pointer;
         typedef size_t size_type;
-
         typedef bidirectional<value_type> iterator;
         typedef bidirectional<const value_type> const_iterator;
-
         typedef reverse_iterator<iterator> reverse_iterator;
         typedef reverse_iterator<const_iterator> const_reverse_iterator;
         class value_compare : public binary_function<value_type,value_type,bool> 
@@ -60,20 +58,12 @@ namespace ft
         };
 
     private:
-        typedef typename Alloc::template rebind<Node<value_type> >::other node_allocator;
-        typedef Node<value_type> *node_pointer;
-        typedef Node<const value_type> *const_node_pointer;
-
-    private:
-        key_compare _ft_cmp;
+        AVL<value_type, key_compare, allocator_type> _my_tree;
+        size_type _size;
         allocator_type _allocator;
-        node_pointer _root_;
-        size_type _size_;
-        node_allocator _node_allocator;
+        key_compare _comare_key;
 
-
-        explicit map(const Compare& comp = Compare(),
-        const Allocator& = Allocator());
+        explicit map(const Compare& comp = Compare(),const Allocator& = Allocator());
         template <class InputIterator>
         map(InputIterator first, InputIterator last, const Compare& comp = Compare(), const Allocator& = Allocator());
         map(const map<Key,T,Compare,Allocator>& x);
