@@ -1,0 +1,54 @@
+{
+  "document": {
+    "id": "doc",
+    "name": "New Document",
+    "version": 15.5,
+    "pages": {
+      "page": {
+        "id": "page",
+        "name": "Page 1",
+        "childIndex": 1,
+        "shapes": {
+          "5258a957-e2ed-4b6b-37c5-6dd318167772": {
+            "id": "5258a957-e2ed-4b6b-37c5-6dd318167772",
+            "type": "text",
+            "name": "Text",
+            "parentId": "page",
+            "childIndex": 1,
+            "point": [
+              97.29,
+              49.78
+            ],
+            "rotation": 0,
+            "text": "so balancing in AVL tree is to keep the operation on it log(n) skewed trees are O(n)",
+            "style": {
+              "color": "black",
+              "size": "small",
+              "isFilled": false,
+              "dash": "draw",
+              "scale": 0.9437657496654291,
+              "font": "script",
+              "textAlign": "middle"
+            }
+          }
+        },
+        "bindings": {}
+      }
+    },
+    "pageStates": {
+      "page": {
+        "id": "page",
+        "selectedIds": [],
+        "camera": {
+          "point": [
+            0,
+            0
+          ],
+          "zoom": 1
+        }
+      }
+    },
+    "assets": {}
+  },
+  "assets": {}
+}
