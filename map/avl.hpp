@@ -23,13 +23,15 @@ private:
   typedef Alloc allocate;
   typedef typename Alloc::template rebind<Node<value_type> >::other node_allocator;
 
-  Node<value_type> *_PTN;
+  Node<value_type> *_root;
   node_allocator _alloc_node;
   allocate  _allocator;
   key_compare _compare_key;
 
 public:
-  Node<value_type> * base() {return _PTN;}
+  AVL() { _root = NULL; }
+  void setRoot(Node<value_type> *node) {_root = node;}
+  Node<value_type> * base() {return _root;}
   Node<value_type> *newNode(Content content)
   {
     Node<value_type> *node = _alloc_node.allocate(sizeof(Node<value_type>));
@@ -52,7 +54,7 @@ public:
       return 0;
     return height(N->left) - height(N->right);
   }
-  void _freePair(Content c)
+  void _freePair(Content *c)
   {
       _allocator.destroy(c);
       _allocator.deallocate(c, 1);
@@ -104,18 +106,18 @@ public:
     A->height = max(height(A->left), height(A->right)) + 1;
     return A;
   }
-  Node<value_type> *insert(Node<value_type> *node, Node<value_type> *parent, Content cnt)
+  Node<value_type> *insert_node(Node<value_type> *node, Node<value_type> *parent, Content cnt)
   {
     if (node == NULL)
       return newNode(cnt);
     if (_compare_key(cnt.first, (node->cnt->first))) // returns true if the first argument is considered to go before the second
-      node->left = insert(node->left, node, cnt);
+      node->left = insert_node(node->left, node, cnt);
     else if (_compare_key(node->cnt->first, cnt.first))
-      node->right = insert(node->right, node, cnt);
+      node->right = insert_node(node->right, node, cnt);
     else
       return node;
     node->height = 1 + max(height(node->left), height(node->right));
-    int balanceFactor = getBalanceFactor(node);
+    int balanceFactor = getBalance(node);
     if (balanceFactor > 1) // left is dominant
     {
       if (_compare_key(cnt.first, node->left->cnt->first)) // Left Left Case
@@ -198,14 +200,15 @@ public:
       return right;
     Node<value_type> *left = searchNode(node->left, key);
     return left;
+    return NULL;
   }
   Node<value_type> *deleteNode(Node<value_type> *root, typename value_type::first_type key)
   {
     if (root == NULL)
       return NULL;
-    if (_compare_key(key, root->key->first))
+    if (_compare_key(key, root->cnt->first))
       root->left = deleteNode(root->left, key);
-    else if (_compare_key((root->key)->first, key))
+    else if (_compare_key((root->cnt)->first, key))
       root->right = deleteNode(root->right, key);
     else
     {
@@ -260,10 +263,10 @@ deleted ->  (1)  10
     if (root == NULL)
       return root;
     root->height = max(height(root->left), height(root->right)) + 1;
-    int balanceFactor = getBalanceFactor(root);
+    int balanceFactor = getBalance(root);
     if (balanceFactor > 1)
     {
-      if (getBalanceFactor(root->left) >= 0)
+      if (getBalance(root->left) >= 0)
         return rightRotate(root);
       else
       {
@@ -273,7 +276,7 @@ deleted ->  (1)  10
     }
     if (balanceFactor < -1)
     {
-      if (getBalanceFactor(root->right) <= 0)
+      if (getBalance(root->right) <= 0)
         return leftRotate(root);
       else
       {
@@ -300,8 +303,7 @@ deleted ->  (1)  10
     }
     return NULL;
   }
-public:
-  AVL() { _PTN = NULL; }
+
 };
 
 #endif

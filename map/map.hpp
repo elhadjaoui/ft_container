@@ -63,12 +63,17 @@ namespace ft
         size_type _size;
         allocator_type _allocator;
         key_compare _comare_key;
-
+    public :
         explicit map(const Compare& comp = Compare(),const allocator_type& = allocator_type()) : _size(0), _my_tree(NULL) {}
         template <class InputIterator>
-        map(InputIterator first, InputIterator last, const Compare& comp = Compare(), const allocator_type& = allocator_type());
-        map(const map<Key,T,Compare,allocator_type>& x);
-        ~map();
+        map(InputIterator first, InputIterator last, const Compare& comp = Compare(), const allocator_type& = allocator_type()) : _size(0), _my_tree(NULL)
+        {
+            insert(first, last);
+        }
+        map(const map<Key,T,Compare,allocator_type>& x): _size(0), _my_tree(NULL)
+        {
+             insert(x.begin(), x.end());
+        }
         map<Key,T,Compare,allocator_type>&operator=(const map<Key,T,Compare,allocator_type>& x)
         {
           clear();
@@ -76,7 +81,10 @@ namespace ft
           return *this;
         }
         // iterators:
-        iterator begin();
+        iterator begin()
+        {
+          return iterator()
+        }
         const_iterator begin() const;
         iterator end();
         const_iterator end() const;
@@ -93,21 +101,66 @@ namespace ft
         // modifiers:
         pair<iterator, bool> insert(const value_type& x)
         {
-          
+          if (!find(x.first))
+          {
+            _size++;
+           _my_tree.setRoot(_my_tree.insert_node(_my_tree.base(), NULL, x));
+            return (ft::make_pair(find(x.first), true));
+          }
+          return (ft::make_pair(find(x.first), false));
         }
         iterator insert(iterator position, const value_type& x)
         {
-
+          (void)position;
+          return insert(x).first;
         }
         template <class InputIterator>
-        void insert(InputIterator first, InputIterator last);
-        void erase(iterator position);
-        size_type erase(const key_type& x);
-        void erase(iterator first, iterator last);
-        void swap(map<Key,T,Compare,allocator_type>&);
-        void clear();
+        void insert(InputIterator first, InputIterator last)
+        {
+            for (; first != last; first++)
+              insert(*first);
+        }
+        void erase(iterator position)
+        {
+          erase(position->first);
+        }
+        size_type erase(const key_type& x)
+        {
+          if (_size)
+          {
+            if (find(x) == end())
+              return 0;
+            _size--;
+            _my_tree.setRoot(_my_tree.deleteNode(_my_tree.base(), x));
+            return 1;
+          }
+          return 0;
+        }
+        void erase(iterator first, iterator last)
+        {
+            if (_size)
+            {
+              if (first != last)
+              {
+                iterator it = first;
+                erase(++first, last);
+                erase(it);
+              }
+            }
+        }
+        void swap(map<Key,T,Compare,allocator_type>&)
+        {
+
+        }
+        void clear()
+        {
+
+        }
         // observers:
-        key_compare key_comp() const;
+        key_compare key_comp() const
+        {
+
+        }
         value_compare value_comp() const;
 
         iterator find(const key_type& x)
@@ -116,7 +169,7 @@ namespace ft
         }
         const_iterator find(const key_type& x) const
         {
-          
+          return const_iterator(_my_tree.searchNode(_my_tree.base(), x));
         }
         size_type count(const key_type& x) const;
         iterator lower_bound(const key_type& x);

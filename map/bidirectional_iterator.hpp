@@ -26,7 +26,7 @@ public:
     typedef std::bidirectional_iterator_tag iterator_category;
 
 private:
-    Node<value_type> *_root;;
+    Node<value_type> *_root;
     Node<value_type> *_last_root_position;
     Node<value_type> *leaf_right_node(Node<value_type> *node) const 
     { 
