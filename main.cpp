@@ -18,16 +18,16 @@
 // CPP Program to demonstrate Conversion Operators
 #include <cmath>
 #include <memory>
-// #include "./vector/random_access_iterator.hpp"
-// #include "./vector/reverse_iterator.hpp"
-// #include "./vector/equal.hpp"
-// #include "./vector/lexicographical_compare.hpp"
-// #include "./vector/is_integral.hpp"
-// #include "./vector/enable_if.hpp"
-// #include "./vector/vector.hpp"
-// #include "./stack/stack.hpp"
-// #include "./map/pair.hpp"
-// #include "./map/make_pair.hpp"
+#include "./vector/random_access_iterator.hpp"
+#include "./vector/reverse_iterator.hpp"
+#include "./vector/equal.hpp"
+#include "./vector/lexicographical_compare.hpp"
+#include "./vector/is_integral.hpp"
+#include "./vector/enable_if.hpp"
+#include "./vector/vector.hpp"
+#include "./stack/stack.hpp"
+#include "./map/pair.hpp"
+#include "./map/make_pair.hpp"
 
 
 using namespace std;

@@ -22,8 +22,8 @@ class Node
     public:
         Content *cnt;
         Node<Content> *parent;
-         Node<Content> *left;
-         Node<Content> *right;
+        Node<Content> *left;
+        Node<Content> *right;
         int height;
 
   Node(Content cnt, Node *father) : height(1), left(NULL), parent(father), right(NULL)

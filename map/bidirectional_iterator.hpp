@@ -28,27 +28,21 @@ public:
 private:
     Node<value_type> *_root;;
     Node<value_type> *_last_root_position;
-
-
     Node<value_type> *leaf_right_node(Node<value_type> *node) const 
     { 
         if (!node) return NULL;
         return !node->right ? node : leaf_right_node(node->right); 
     }
-
     Node<value_type> *leaf_left_node(Node<value_type> *node) const
     { 
         if (!node) return NULL;
         return !node->left ? node : leaf_left_node(node->left); 
     }
-
     Node<value_type> *_parent(Node<value_type> *node)
     {
         if (!node) return NULL;
         return node->parent;
     }
-
-
     void previous_position()
     {  
         if (!_root)
@@ -157,9 +151,8 @@ root ->  (-1) 2   6
                |__ root   root++ == node(12)
         */
     }
-
 public:
-    // bidirectional(Node<value_type> *node) { _root = node; }
+    bidirectional(Node<value_type> *node) { _root = node; }
     bidirectional(): _root(NULL), _last_root_position(NULL) {}
     template <class T1>
     bidirectional(const bidirectional<T1> &copy): _root((Node<value_type> *)copy._root), _last_root_position((Node<value_type> *)copy._last_root_position){}
@@ -170,38 +163,31 @@ public:
         _last_root_position = (Node<value_type> *)copy._last_root_position;
         return *this;
     }
-
     bidirectional operator--()
     {
         previous_position();
         return *this;
     }
-
     bidirectional operator--(int)
     {
         bidirectional _tmp = *this;
         operator--();
         return _tmp;
     }
-
     bidirectional operator++()
     {
         next_position();
         return *this;
     }
-
     bidirectional operator++(int)
     {
         bidirectional _tmp = *this;
         operator++();
         return _tmp;
     }
-
     pointer operator->() const { return _root->cnt; }
     reference operator*() const { return *(operator->()); }
-
     bool operator==(const bidirectional lhs) { return _root == lhs._root; }
-
     bool operator!=(const bidirectional lhs) { return _root != lhs._root; }
 };
 }

@@ -20,13 +20,16 @@ class AVL
 private:
   typedef Content value_type;
   typedef Compare key_compare;
-  typedef typename Alloc::template rebind<Node<value_type>>::other node_allocator;
+  typedef Alloc allocate;
+  typedef typename Alloc::template rebind<Node<value_type> >::other node_allocator;
 
   Node<value_type> *_PTN;
   node_allocator _alloc_node;
+  allocate  _allocator;
   key_compare _compare_key;
 
 public:
+  Node<value_type> * base() {return _PTN;}
   Node<value_type> *newNode(Content content)
   {
     Node<value_type> *node = _alloc_node.allocate(sizeof(Node<value_type>));
@@ -59,8 +62,8 @@ public:
       if (!node)
           return;
       _freePair(node->cnt);
-      _node_allocator.destroy(node);
-      _node_allocator.deallocate(node, 1);
+      _alloc_node.destroy(node);
+      _alloc_node.deallocate(node, 1);
   }
   Node<value_type> *leaf_right_node(Node<value_type> *node) const // maximum node
   {
@@ -219,13 +222,13 @@ public:
           root = NULL;
         }
         else // One child case
-          _allocater.construct(root, *temp);
+          _allocator.construct(root, *temp);
         _freeNode(temp);
       }
       else // two child case
       {
         Node<value_type> *temp = leaf_left_node(root->right); // node with two children: Get the inorder  successor (smallest in the right subtree)
-        _allocater.construct(root->key, *temp->key);
+        _allocator.construct(root->key, *temp->key);
         root->right = deleteNode(root->right, temp->key->first);
         // explanation
           /* The constructed AVL Tree would be
@@ -292,8 +295,8 @@ deleted ->  (1)  10
     clear_tree(root->left);
     if (root)
     {
-      _allocater.destroy(root);
-      _allocater.deallocate(root, sizeof(Node<value_type>));
+      _allocator.destroy(root);
+      _allocator.deallocate(root, sizeof(Node<value_type>));
     }
     return NULL;
   }
