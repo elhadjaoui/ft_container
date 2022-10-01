@@ -30,12 +30,13 @@ private:
 
 public:
   AVL() { _root = NULL; }
+  AVL(Node<value_type> *node) { _root = node; }
   void setRoot(Node<value_type> *node) {_root = node;}
-  Node<value_type> * base() {return _root;}
+  Node<value_type> *base() const {return _root;}
   Node<value_type> *newNode(Content content)
   {
     Node<value_type> *node = _alloc_node.allocate(sizeof(Node<value_type>));
-    node = _alloc_node.construct(node, Node<value_type>(content, NULL));
+   _alloc_node.construct(node, Node<value_type>(content, NULL));
     return (node);
   }
   int max(int a, int b)
@@ -69,10 +70,12 @@ public:
   }
   Node<value_type> *leaf_right_node(Node<value_type> *node) const // maximum node
   {
+    if (!node) return NULL;
     return !node->right ? node : leaf_right_node(node->right);
   }
   Node<value_type> *leaf_left_node(Node<value_type> *node) const // minimum node
   {
+    if (!node) return NULL;
     return !node->left ? node : leaf_left_node(node->left);
   }
   Node<value_type> *rightRotate(Node<value_type> *unbalanced_node)
@@ -225,14 +228,14 @@ public:
           root = NULL;
         }
         else // One child case
-          _allocator.construct(root, *temp);
+          _alloc_node.construct(root, *temp);
         _freeNode(temp);
       }
       else // two child case
       {
         Node<value_type> *temp = leaf_left_node(root->right); // node with two children: Get the inorder  successor (smallest in the right subtree)
-        _allocator.construct(root->key, *temp->key);
-        root->right = deleteNode(root->right, temp->key->first);
+        _allocator.construct(root->cnt, *temp->cnt);
+        root->right = deleteNode(root->right, temp->cnt->first);
         // explanation
           /* The constructed AVL Tree would be
  
@@ -294,12 +297,12 @@ deleted ->  (1)  10
   {
     if (!root)
       return NULL;
-    clear_tree(root->right);
     clear_tree(root->left);
+    clear_tree(root->right);
     if (root)
     {
-      _allocator.destroy(root);
-      _allocator.deallocate(root, sizeof(Node<value_type>));
+      _alloc_node.destroy(root);
+      _alloc_node.deallocate(root, sizeof(Node<value_type>));
     }
     return NULL;
   }

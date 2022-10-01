@@ -38,11 +38,6 @@ private:
         if (!node) return NULL;
         return !node->left ? node : leaf_left_node(node->left); 
     }
-    Node<value_type> *_parent(Node<value_type> *node)
-    {
-        if (!node) return NULL;
-        return node->parent;
-    }
     void previous_position()
     {  
         if (!_root)

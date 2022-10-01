@@ -28,7 +28,7 @@
 #include "./stack/stack.hpp"
 #include "./map/pair.hpp"
 #include "./map/make_pair.hpp"
-// #include "./map/map.hpp"
+#include "./map/map.hpp"
 
 
 using namespace std;
@@ -37,29 +37,30 @@ using namespace std;
 #include <map>
 
  
-// Driver Code
 int main ()
 {
-  std::map<char,int> mymap;
-  std::map<char,int>::iterator it;
-   mymap.insert(std::pair<char,int>('a',20));
-   mymap.insert(std::pair<char,int>('b',20));
-   mymap.insert(std::pair<char,int>('c',30));
-   mymap.insert(std::pair<char,int>('d',40));
-   mymap.insert(std::pair<char,int>('e',50));
-   mymap.insert(std::pair<char,int>('f',60));
+  ft::map<char,int> mymap;
+  ft::map<char,int>::iterator it;
 
-//   it=mymap.find('b');
-//   mymap.erase (it);                   // erasing by iterator
+  // insert some values:
+  mymap['a']=10;
+  mymap['b']=20;
+  mymap['c']=30;
+  mymap['d']=40;
+  mymap['e']=50;
+  mymap['f']=60;
 
-//   mymap.erase ('c');                  // erasing by key
+  it=mymap.find('b');
+  mymap.erase (it);                   // erasing by iterator
 
-//   it=mymap.find ('e');
-//   mymap.erase ( it, mymap.end() );    // erasing by range
+  mymap.erase ('c');                  // erasing by key
+
+  it=mymap.find ('e');
+  mymap.erase ( it, mymap.end() );    // erasing by range
 
   // show content:
   for (it=mymap.begin(); it!=mymap.end(); ++it)
     std::cout << it->first << " => " << it->second << '\n';
-
+  // system("leaks a.out");
   return 0;
 }
