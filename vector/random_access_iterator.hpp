@@ -34,10 +34,11 @@ namespace ft
     public:
         __wrap_iter() : _i() {}
         template <class T>
-        __wrap_iter(const __wrap_iter<T> &copy) : _i(copy._i) {}
+        __wrap_iter(const __wrap_iter<T> &copy) : _i(copy.base()) {}
         __wrap_iter(pointer _new_i):_i(_new_i){}
+        pointer base() const  {return _i;};
         template <class T>
-        __wrap_iter &operator=(const __wrap_iter<T> &copy){ _i = copy._i;  return *this;}
+        __wrap_iter &operator=(const __wrap_iter<T> &copy){ _i = copy.base();  return *this;}
         __wrap_iter operator--(){ _i--; return *this;}
         // a--
         __wrap_iter operator--(int){ __wrap_iter _old = *this; _i--; return _old;}

@@ -63,6 +63,7 @@ namespace ft
             template <class InputIterator>
 		    vector(InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type(), typename enable_if<!is_integral<InputIterator>::value, bool>::type x = true): _allocator(alloc), _buffer(),_capacity(0), _size(0)
 		    {
+				x = true; // just to silent this error "unused variable"
 				for(; first != last; first++)
 					push_back(*first);
 		    }
@@ -110,7 +111,7 @@ namespace ft
 			{
 				if (n > _capacity)
 				{
-					reserve(n);
+					(n < _capacity * 2) ? reserve(_capacity * 2) : reserve(n);
 					for (; _size < n; _size++)
 						_allocator.construct(_buffer + _size, val);
 				}
@@ -187,6 +188,7 @@ namespace ft
 			template <class InputIterator>
 			void assign(InputIterator first, InputIterator last, typename enable_if<!is_integral<InputIterator>::value, bool>::type x = true)
 			{
+				x = true; // just to silent this error unused parameter
 				clear();
 				size_type n = 0;
 				InputIterator tmp = first;
@@ -263,7 +265,8 @@ namespace ft
 				diff = 0;
 				if ( diff > (difference_type)_size)
 					diff = (difference_type)_size;
-        	   	reserve(cap);
+				if (cap > (difference_type)_capacity)
+        	   	 (cap < (difference_type)_capacity * 2) ? reserve(_capacity * 2) : reserve(cap);
         	    insert(begin() + diff, last - first, value_type());
         	    for (InputIterator it = first; it != last; it++)
         	    {

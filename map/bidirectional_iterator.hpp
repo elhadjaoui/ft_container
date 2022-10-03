@@ -28,6 +28,7 @@ public:
 private:
     Node<value_type> *_root;
     Node<value_type> *_last_root_position;
+    // Node<value_type> *end = NULL;
     Node<value_type> *leaf_right_node(Node<value_type> *node) const 
     { 
         if (!node) return NULL;
@@ -106,7 +107,7 @@ root ->  (-1) 2   6
                 _root = parent;
                 parent = parent->parent;
             }
-            _root = parent;
+             _root = parent;
             
         }
         // explanation  
@@ -148,14 +149,16 @@ root ->  (-1) 2   6
     }
 public:
     bidirectional(Node<value_type> *node) { _root = node; }
+    Node<value_type> *base() const  {return _root;}
+    Node<value_type> *last_base() const  {return _last_root_position;}
     bidirectional(): _root(NULL), _last_root_position(NULL) {}
     template <class T1>
-    bidirectional(const bidirectional<T1> &copy): _root((Node<value_type> *)copy._root), _last_root_position((Node<value_type> *)copy._last_root_position){}
+    bidirectional(const bidirectional<T1> &copy): _root((Node<value_type> *)copy.base()), _last_root_position((Node<value_type> *)copy.last_base()){}
     template <class T1>
     bidirectional &operator=(bidirectional<T1> &copy)
     {
-        _root = (Node<value_type> *)copy._root;
-        _last_root_position = (Node<value_type> *)copy._last_root_position;
+        _root = (Node<value_type> *)copy.base();
+        _last_root_position = (Node<value_type> *)copy.last_base();
         return *this;
     }
     bidirectional operator--()
@@ -183,8 +186,7 @@ public:
     pointer operator->() const { return _root->cnt; }
     reference operator*() const { return *(operator->()); }
     bool operator==(const bidirectional lhs) { return _root == lhs._root; }
-    bool operator!=(const bidirectional lhs) { return _root != lhs._root; }
-};
+    bool operator!=(const bidirectional lhs) { return _root != lhs._root; }};
 }
 
 #endif

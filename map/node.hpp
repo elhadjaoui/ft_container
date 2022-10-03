@@ -26,12 +26,12 @@ class Node
         Node<Content> *right;
         int height;
 
-  Node(Content cnt, Node *father) : height(0), left(NULL), parent(father), right(NULL)
+  Node(Content cnt, Node *father) :  parent(father), left(NULL),  right(NULL), height(1)
   {
     this->cnt = _allocator.allocate(1);
     _allocator.construct(this->cnt, cnt);
   }
-  Node() : height(0), left(NULL), parent(NULL), right(NULL) {}
+  Node() : height(1), left(NULL), parent(NULL), right(NULL) {}
 };
 
 

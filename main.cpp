@@ -36,32 +36,14 @@ using namespace std;
 #include <iostream>
 #include <map>
 
- 
 int main ()
 {
-  ft::map<char,int> mymap;
-  ft::map<char,int>::iterator it;
+         ft::map<int, std::string> ft_m;
+            for (size_t i = 0; i < 1e6; ++i)
+            {
+                ft_m.insert(ft::make_pair(i, "value"));
+            }
 
-  // insert some values:
-  mymap['a']=10;
-  mymap['b']=20;
-  mymap['c']=30;
-  mymap['d']=40;
-  mymap['e']=50;
-  mymap['f']=60;
-
-  it=mymap.find('b');
-  mymap.erase (it);                   // erasing by iterator
-
-  mymap.erase ('c');                  // erasing by key
-
-  it=mymap.find ('e');
-  mymap.erase ( it, mymap.end() );  
-  cout << mymap.size() << endl;  // erasing by range
-
-  // show content:
-  for (it=mymap.begin(); it!=mymap.end(); ++it)
-    std::cout << it->first << " => " << it->second << '\n';
-  // system("leaks a.out");
   return 0;
 }
+  // system("leaks a.out");

@@ -64,7 +64,7 @@ public:
   {
       if (!node)
           return;
-      _freePair(node->cnt);
+      // _freePair(node->cnt);
       _alloc_node.destroy(node);
       _alloc_node.deallocate(node, 1);
   }
@@ -109,16 +109,18 @@ public:
     A->height = max(height(A->left), height(A->right)) + 1;
     return A;
   }
-  Node<value_type> *insert_node(Node<value_type> *node, Node<value_type> *parent, Content cnt)
+  Node<value_type> *insert_node(Node<value_type> *node, Content cnt)
   {
+    std::cout << cnt.first << std::endl;
     if (node == NULL)
       return newNode(cnt);
-    if (_compare_key(cnt.first, (node->cnt->first))) // returns true if the first argument is considered to go before the second
-      node->left = insert_node(node->left, node, cnt);
+    else if (_compare_key(cnt.first, (node->cnt->first))) // returns true if the first argument is considered to go before the second
+      node->left = insert_node(node->left, cnt);
     else if (_compare_key(node->cnt->first, cnt.first))
-      node->right = insert_node(node->right, node, cnt);
+      node->right = insert_node(node->right, cnt);
     else
       return node;
+    // std::cout << "cnt.first" << std::endl;
     node->height = 1 + max(height(node->left), height(node->right));
     int balanceFactor = getBalance(node);
     if (balanceFactor > 1) // left is dominant
@@ -228,7 +230,12 @@ public:
           root = NULL;
         }
         else // One child case
+        {
+          // temp->parent = root->parent;
           _alloc_node.construct(root, *temp);
+          // root->parent = parent;
+        } 
+
         _freeNode(temp);
       }
       else // two child case
@@ -291,6 +298,7 @@ deleted ->  (1)  10
       root->left->parent = root;
     if (root->right)
       root->right->parent = root;
+
     return root;
   }
   Node<value_type> *clear_tree(Node<value_type> *root)
@@ -306,7 +314,25 @@ deleted ->  (1)  10
     }
     return NULL;
   }
+  void preOrder(Node<value_type> *root)
+  {
+  
+        if (root == NULL)
+        return;
+ 
+    /* first print data of root */
+        std::cout << root->cnt->first << " ";
 
+ 
+    /* then recur on left subtree */
+    preOrder(root->left);
+    // std::cout << " / \n";
+ 
+    /* now recur on right subtree */
+    preOrder(root->right);
+    // std::cout << " \\ \n";
+
+  }
 };
 
 #endif
