@@ -106,7 +106,9 @@ namespace ft
     }
     iterator end()
     {
-      return ++iterator((_my_tree.leaf_right_node(_my_tree.base())));
+      iterator it = iterator(NULL,_my_tree.leaf_right_node(_my_tree.base()));
+      // iterator it = iterator((_my_tree.leaf_right_node(_my_tree.base())));
+      return (it);
     }
     const_iterator end() const
     {
@@ -142,10 +144,11 @@ namespace ft
     // modifiers:
     pair<iterator, bool> insert(const value_type &x)
     {
-      if (find(x.first) == end())
+      Node<value_type> *node = _my_tree.insert_node(_my_tree.base(), x, NULL);
+      if (node)
       {
         _size++;
-        _my_tree.setRoot(_my_tree.insert_node(_my_tree.base(), x));
+        _my_tree.setRoot(node);
         return (ft::make_pair(find(x.first), true));
       }
       return (ft::make_pair(find(x.first), false));
@@ -214,11 +217,17 @@ namespace ft
 
     iterator find(const key_type &x)
     {
-      return (iterator(_my_tree.searchNode(_my_tree.base(), x)));
+      Node<value_type> *node = _my_tree.searchNode(_my_tree.base(), x); 
+      if (node)
+        return (iterator(node));
+      return end();
     }
     const_iterator find(const key_type &x) const
     {
-      return const_iterator((const_node_pointer)_my_tree.searchNode(_my_tree.base(), x));
+      Node<value_type> *node = _my_tree.searchNode(_my_tree.base(), x); 
+      if (node)
+        return (const_iterator((const_node_pointer)node));
+       return end();
     }
     size_type count(const key_type &x) const
     {

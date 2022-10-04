@@ -35,7 +35,7 @@ namespace ft
         const value_type &top() const { return _c_type.back(); }
         void push(const value_type &val) { return _c_type.push_back(val); }
         void pop() { return _c_type.pop_back(); }
-        container_type base(){return _c_type;}
+        container_type base() const {return _c_type;}
     };
 
     template <class T, class Container>

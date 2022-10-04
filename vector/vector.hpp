@@ -14,7 +14,7 @@
 #define VECTOR_H
 
 // #include <fstream>
-// #include <iostream>
+#include <iostream>
 // #include <iterator>
 // #include <map>
 // #include <vector>
@@ -43,14 +43,15 @@ namespace ft
             typedef size_t										size_type;
             typedef __wrap_iter<pointer>								iterator;
             typedef __wrap_iter<const_pointer>						const_iterator;
-            typedef reverse_iterator<const_iterator>	        const_reverse_iterator;
-            typedef reverse_iterator<iterator>					reverse_iterator;
+            typedef ft::reverse_iterator<iterator>					reverse_iterator;
+            typedef ft::reverse_iterator<const_iterator>	        const_reverse_iterator;
 
          private:
 		    allocator_type	_allocator;
 		    pointer			_buffer;
 		    size_type		_capacity;
 		    size_type		_size;
+			difference_type _diff;
 
         public :
 		    explicit vector(const allocator_type &alloc = allocator_type()): _allocator(alloc), _buffer(), _capacity(0), _size(0) {}
@@ -64,8 +65,18 @@ namespace ft
 		    vector(InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type(), typename enable_if<!is_integral<InputIterator>::value, bool>::type x = true): _allocator(alloc), _buffer(),_capacity(0), _size(0)
 		    {
 				x = true; // just to silent this error "unused variable"
-				for(; first != last; first++)
-					push_back(*first);
+				// for(; first != last; first++)
+				// 	push_back(*first);
+
+				_diff = std::distance(first, last);
+				//_diff = last - first;
+				if (_diff < 0)
+					_diff = _diff * -1;
+				_size = _diff;
+				_capacity = _size;
+				_buffer = _allocator.allocate(_diff);
+				for (size_t i = 0; first != last; first++)
+					_allocator.construct(&_buffer[i++], *first);
 		    }
             vector(const vector &x): _allocator(x.get_allocator()), _capacity(x._size), _size(x._size)
 			{
@@ -95,14 +106,17 @@ namespace ft
 			{
 				if (n > max_size())
 					throw std::length_error("allocator<T>::allocate(size_t n) 'n' exceeds maximum supported size");
-				if (n > _capacity)
+				else if (n > _capacity)
 				{
 					pointer tmp = _allocator.allocate(n);;
-					for (size_type i = 0; i < _size; i++)
-        	            _allocator.construct(&(tmp[i]), _buffer[i]);
-					for (size_type i = 0; i < _size; i++)
-						_allocator.destroy(_buffer + i);
-					_allocator.deallocate(_buffer, _capacity);
+					if (_buffer)
+					{
+						for (size_type i = 0; i < _size; i++)
+        	        	    _allocator.construct(&(tmp[i]), _buffer[i]);
+						for (size_type i = 0; i < _size; i++)
+							_allocator.destroy(_buffer + i);
+						_allocator.deallocate(_buffer, _capacity);
+					}
 					_capacity	= n;
 					_buffer		= tmp;
 				}

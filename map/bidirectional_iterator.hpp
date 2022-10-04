@@ -149,6 +149,11 @@ root ->  (-1) 2   6
     }
 public:
     bidirectional(Node<value_type> *node) { _root = node; }
+    bidirectional(Node<value_type> *node, Node<value_type> *last  ) 
+    { 
+        _root = node; 
+        _last_root_position = last;
+    }
     Node<value_type> *base() const  {return _root;}
     Node<value_type> *last_base() const  {return _last_root_position;}
     bidirectional(): _root(NULL), _last_root_position(NULL) {}
@@ -183,7 +188,7 @@ public:
         operator++();
         return _tmp;
     }
-    pointer operator->() const { return _root->cnt; }
+    pointer operator->() const { return &(_root->cnt); }
     reference operator*() const { return *(operator->()); }
     bool operator==(const bidirectional lhs) { return _root == lhs._root; }
     bool operator!=(const bidirectional lhs) { return _root != lhs._root; }};

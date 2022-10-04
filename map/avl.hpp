@@ -33,16 +33,6 @@ public:
   AVL(Node<value_type> *node) { _root = node; }
   void setRoot(Node<value_type> *node) {_root = node;}
   Node<value_type> *base() const {return _root;}
-  Node<value_type> *newNode(Content content)
-  {
-    Node<value_type> *node = _alloc_node.allocate(sizeof(Node<value_type>));
-   _alloc_node.construct(node, Node<value_type>(content, NULL));
-    return (node);
-  }
-  int max(int a, int b)
-  {
-    return (a > b) ? a : b;
-  }
   int height(Node<value_type> *N)
   {
     if (N == NULL)
@@ -55,11 +45,19 @@ public:
       return 0;
     return height(N->left) - height(N->right);
   }
-  void _freePair(Content *c)
-  {
-      _allocator.destroy(c);
-      _allocator.deallocate(c, 1);
-  }
+  // void _freePair(Content *c)
+  // {
+  //     _allocator.destroy(c);
+  //     _allocator.deallocate(c, 1);
+  // }
+  void parent_correction(Node<value_type>*&n, Node<value_type> *p)
+	{
+		if (!n)
+			return ;
+		parent_correction(n->right, n);
+		n->parent = p;
+		parent_correction(n->left, n);
+	}
   void _freeNode(Node<value_type> *node)
   {
       if (!node)
@@ -85,12 +83,15 @@ public:
     A->right = unbalanced_node;
     unbalanced_node->left = B;
     // keep track of parent
-    A->parent = unbalanced_node->parent;
-    unbalanced_node->parent = A;
-    if (unbalanced_node->left)
-      unbalanced_node->left->parent = unbalanced_node;
-    unbalanced_node->height = max(height(unbalanced_node->left), height(unbalanced_node->right)) + 1;
-    A->height = max(height(A->left), height(A->right)) + 1;
+    // A->parent = unbalanced_node->parent;
+    // unbalanced_node->parent = A;
+    parent_correction(unbalanced_node, A->parent);
+    unbalanced_node->height = std::max(height(unbalanced_node->left), height(unbalanced_node->right)) + 1;
+    A->height = std::max(height(A->left), height(A->right)) + 1;
+    if (A->right)
+				A->right->height = std::max(height(A->right->left), height(A->right->right)) + 1;
+			if (A->left)
+				A->left->height = std::max(height(A->left->left), height(A->left->right)) + 1;
     return A;
   }
   Node<value_type> *leftRotate(Node<value_type> *unbalanced_node)
@@ -101,32 +102,42 @@ public:
     A->left = unbalanced_node;
     unbalanced_node->right = B;
     // keep track of parent
-    A->parent = unbalanced_node->parent;
-    unbalanced_node->parent = A;
-    if (unbalanced_node->right)
-      unbalanced_node->right->parent = unbalanced_node;
-    unbalanced_node->height = max(height(unbalanced_node->left), height(unbalanced_node->right)) + 1;
-    A->height = max(height(A->left), height(A->right)) + 1;
+    // A->parent = unbalanced_node->parent;
+    // unbalanced_node->parent = A;
+    // if (unbalanced_node->right)
+    //   unbalanced_node->right->parent = unbalanced_node;
+    parent_correction(A, unbalanced_node->parent);
+    unbalanced_node->height = std::max(height(unbalanced_node->left), height(unbalanced_node->right)) + 1;
+    A->height = std::max(height(A->left), height(A->right)) + 1;
+    if (A->left)
+				A->left->height = std::max(height(A->left->left), height(A->left->right)) + 1;
+		if (A->right)
+				A->right->height = std::max(height(A->right->left), height(A->right->right)) + 1;
     return A;
   }
-  Node<value_type> *insert_node(Node<value_type> *node, Content cnt)
+  Node<value_type> *insert_node(Node<value_type> *node, const  Content &cnt, Node<value_type> *parent)
   {
-    std::cout << cnt.first << std::endl;
-    if (node == NULL)
-      return newNode(cnt);
-    else if (_compare_key(cnt.first, (node->cnt->first))) // returns true if the first argument is considered to go before the second
-      node->left = insert_node(node->left, cnt);
-    else if (_compare_key(node->cnt->first, cnt.first))
-      node->right = insert_node(node->right, cnt);
-    else
-      return node;
-    // std::cout << "cnt.first" << std::endl;
-    node->height = 1 + max(height(node->left), height(node->right));
-    int balanceFactor = getBalance(node);
-    if (balanceFactor > 1) // left is dominant
+    // std::cout << cnt.first << std::endl;
+    if (!node)
     {
-      if (_compare_key(cnt.first, node->left->cnt->first)) // Left Left Case
-      {
+        node = _alloc_node.allocate(1);
+        _alloc_node.construct(node, Node<value_type>(cnt));
+        node->parent = parent;
+        return (node);
+     }
+    else if (cnt.first == node->cnt.first)
+      return NULL;
+    else if (_compare_key(cnt.first, node->cnt.first)) // returns true if the first argument is considered to go before the second
+      node->left = insert_node(node->left, cnt, node);
+    else if (_compare_key(node->cnt.first, cnt.first))
+      node->right = insert_node(node->right, cnt, node);
+  
+    node->height = 1 + std::max(height(node->left), height(node->right));
+    int balanceFactor = getBalance(node);
+    if (balanceFactor > 1 && node->left && _compare_key(cnt.first, node->left->cnt.first)) // left is dominant
+    {
+       // Left Left Case
+      
         /*
       we can check if is left left case by comparing the height(left and right) of the left child  node or comparing the key of the inserted node and the unbalced node
             10
@@ -137,11 +148,12 @@ public:
         / \
        1   (4) -> inserted node
       */
-        return rightRotate(node);
-      }
-      else if (_compare_key(node->left->cnt->first, cnt.first)) // Left Right Case
-      {
-        /*
+         node =  rightRotate(node);
+    }
+    else if (balanceFactor > 1 && node->left && _compare_key(node->left->cnt.first , cnt.first)) // left is dominant
+    {
+       // Left right Case
+       /*
         we can check if is left right case by comparing the height(left and right) of the left child node or comparing the key of the inserted node and the unbalced node
                10
               / \
@@ -153,13 +165,12 @@ public:
         */
 
         node->left = leftRotate(node->left);
-        return rightRotate(node);
-      }
+        node =  rightRotate(node);
     }
-    if (balanceFactor < -1) // right is dominant
+    else if (balanceFactor < -1 && node->right && _compare_key(node->right->cnt.first , cnt.first)) // right is dominant
     {
-      if (_compare_key(node->right->cnt->first, cnt.first)) // Right Right Case
-      {
+      // Right Right Case
+     
         /*
          we can check if is right right case by comparing the height(left and right) of the right child node or comparing the key of the inserted node and the unbalced node
                 10
@@ -170,10 +181,11 @@ public:
                    / \
                   18 (20)-> inserted node
          */
-        return leftRotate(node);
-      }
-      else if (_compare_key(cnt.first, node->right->cnt->first)) // Right Left Case
-      {
+         node =  leftRotate(node);
+    }
+    else if (balanceFactor < -1 && node->right && _compare_key(cnt.first, node->right->cnt.first )) //right is dominant
+    {
+    // Right Left Case
         /*
       we can check if is right right case by comparing the height(left and right) of the right child node or comparing the key of the inserted node and the unbalced node
              10
@@ -185,8 +197,7 @@ public:
           18 (20)-> inserted node
       */
         node->right = rightRotate(node->right);
-        return leftRotate(node);
-      }
+         node =  leftRotate(node);
     }
     if (node->left)
       node->left->parent = node;
@@ -194,26 +205,25 @@ public:
       node->right->parent = node;
     return node;
   }
-  Node<value_type> *searchNode(Node<value_type> *node, typename value_type::first_type key) const
+  Node<value_type> *searchNode(Node<value_type> *node, const  typename value_type::first_type key) const
   {
     if (!node)
       return NULL;
-    if (node->cnt->first == key)
+    if (node->cnt.first == key)
       return node;
-    Node<value_type> *right = searchNode(node->right, key);
-    if (right)
-      return right;
-    Node<value_type> *left = searchNode(node->left, key);
-    return left;
-    return NULL;
+    if (_compare_key(key, node->cnt.first))
+      return  searchNode(node->right, key);
+    else
+      return searchNode(node->right, key);
+    return node;
   }
-  Node<value_type> *deleteNode(Node<value_type> *root, typename value_type::first_type key)
+  Node<value_type> *deleteNode(Node<value_type> *root,  const typename value_type::first_type  &key)
   {
     if (root == NULL)
       return NULL;
-    if (_compare_key(key, root->cnt->first))
+    if (_compare_key(key, root->cnt.first))
       root->left = deleteNode(root->left, key);
-    else if (_compare_key((root->cnt)->first, key))
+    else if (_compare_key(root->cnt.first, key))
       root->right = deleteNode(root->right, key);
     else
     {
@@ -241,8 +251,9 @@ public:
       else // two child case
       {
         Node<value_type> *temp = leaf_left_node(root->right); // node with two children: Get the inorder  successor (smallest in the right subtree)
-        _allocator.construct(root->cnt, *temp->cnt);
-        root->right = deleteNode(root->right, temp->cnt->first);
+        _allocator.construct(&(root->cnt), temp->cnt);
+        // std::swap(root->cnt, temp->cnt);
+        root->right = deleteNode(root->right, temp->cnt.first);
         // explanation
           /* The constructed AVL Tree would be
  
@@ -272,7 +283,7 @@ deleted ->  (1)  10
     // then return
     if (root == NULL)
       return root;
-    root->height = max(height(root->left), height(root->right)) + 1;
+    root->height = std::max(height(root->left), height(root->right)) + 1;
     int balanceFactor = getBalance(root);
     if (balanceFactor > 1)
     {
@@ -321,7 +332,7 @@ deleted ->  (1)  10
         return;
  
     /* first print data of root */
-        std::cout << root->cnt->first << " ";
+        std::cout << root->cnt.first << " ";
 
  
     /* then recur on left subtree */

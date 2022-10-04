@@ -31,7 +31,11 @@ namespace ft
 
         public:
             reverse_iterator() : _iter() {}
-            explicit reverse_iterator (iterator_type it):_iter(it){ }
+            explicit reverse_iterator (iterator_type it)
+            {
+                // std::cout << "ues\n";
+                _iter = it;
+            }
             template <class T>
             reverse_iterator(const reverse_iterator<T> &rev_it) { _iter = rev_it.base(); }
             reverse_iterator &operator=(const reverse_iterator &copy) {_iter = copy._iter;return *this;}
@@ -58,12 +62,15 @@ namespace ft
     template <class Iterator>
     reverse_iterator<Iterator> operator+( typename reverse_iterator<Iterator>::difference_type n, const reverse_iterator<Iterator> &it)
     {
-        return reverse_iterator<Iterator>(it.base() + n);
+        reverse_iterator<Iterator> A(it);
+       for (int i = 0; i < n; i++)
+			A++;
+		return (A);
     }
     template <class Iterator>
     typename reverse_iterator<Iterator>::difference_type operator- (const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
     {
-        return (lhs.base() - rhs.base());
+        return (std::distance(lhs.base() , rhs.base()));
     }
     template <class Iterator>
     bool operator== (const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
