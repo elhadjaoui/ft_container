@@ -20,6 +20,8 @@ class AVL
 private:
   typedef Content value_type;
   typedef Compare key_compare;
+  typedef typename value_type::first_type key_type;
+	typedef typename value_type::second_type mapped_type;
   typedef Alloc allocate;
   typedef typename Alloc::template rebind<Node<value_type> >::other node_allocator;
 
@@ -205,19 +207,20 @@ public:
       node->right->parent = node;
     return node;
   }
-  Node<value_type> *searchNode(Node<value_type> *node, const  typename value_type::first_type key) const
+  Node<value_type> *searchNode(Node<value_type> *node, const  key_type key) const
   {
     if (!node)
       return NULL;
-    if (node->cnt.first == key)
+    else if (node->cnt.first == key)
       return node;
-    if (_compare_key(key, node->cnt.first))
-      return  searchNode(node->right, key);
+    else if (_compare_key(key, node->cnt.first))
+      return  searchNode(node->left, key);
     else
       return searchNode(node->right, key);
     return node;
   }
-  Node<value_type> *deleteNode(Node<value_type> *root,  const typename value_type::first_type  &key)
+  
+  Node<value_type> *deleteNode(Node<value_type> *root,  const key_type  &key)
   {
     if (root == NULL)
       return NULL;

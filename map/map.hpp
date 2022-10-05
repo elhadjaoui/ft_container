@@ -24,6 +24,7 @@
 #include "../vector/reverse_iterator.hpp"
 #include "../vector/lexicographical_compare.hpp"
 #include "../vector/equal.hpp"
+#include "../vector/vector.hpp"
 
 #include "avl.hpp"
 
@@ -98,21 +99,21 @@ namespace ft
     // iterators:
     iterator begin()
     {
-      return iterator(_my_tree.leaf_left_node(_my_tree.base()));
+      return iterator(_my_tree.leaf_left_node(_my_tree.base()), _my_tree.base());
     }
     const_iterator begin() const
     {
-      return const_iterator((const_node_pointer)_my_tree.leaf_left_node(_my_tree.base()));
+      return const_iterator((const_node_pointer)_my_tree.leaf_left_node(_my_tree.base()),(const_node_pointer)_my_tree.base());
     }
     iterator end()
     {
-      iterator it = iterator(NULL,_my_tree.leaf_right_node(_my_tree.base()));
+      iterator it = iterator(NULL,_my_tree.base());
       // iterator it = iterator((_my_tree.leaf_right_node(_my_tree.base())));
       return (it);
     }
     const_iterator end() const
     {
-      return const_iterator(NULL);
+      return const_iterator(NULL, (const_node_pointer)_my_tree.base());
     }
     reverse_iterator rbegin()
     {
@@ -139,19 +140,22 @@ namespace ft
     // 23.3.1.2 element access:
     mapped_type &operator[](const key_type &x)
     {
-      return (*((this->insert(ft::make_pair(x, mapped_type()))).first)).second;
+      Node<value_type> *node = _my_tree.searchNode(_my_tree.base(), x);
+      if (node)
+        return node->cnt.second;
+      insert(ft::make_pair(x, mapped_type()));
+      return (_my_tree.searchNode(_my_tree.base(), x))->cnt.second;
+      // return (*((this->insert(ft::make_pair(x, mapped_type()))).first)).second; I dont know why this shit get segfault
     }
     // modifiers:
     pair<iterator, bool> insert(const value_type &x)
     {
-      Node<value_type> *node = _my_tree.insert_node(_my_tree.base(), x, NULL);
-      if (node)
-      {
-        _size++;
-        _my_tree.setRoot(node);
-        return (ft::make_pair(find(x.first), true));
-      }
-      return (ft::make_pair(find(x.first), false));
+    
+      if (find(x.first) != end()) // if the key exist 
+					return (ft::make_pair(find(x.first), false));
+				_size++;
+        _my_tree.setRoot(_my_tree.insert_node(_my_tree.base(), x, NULL));
+				return (ft::make_pair(find(x.first), true));
     }
     iterator insert(iterator position, const value_type &x)
     {
@@ -187,12 +191,18 @@ namespace ft
     {
       if (_size)
       {
-        if (first != last)
-        {
-          iterator it = first;
-          erase(++first, last);
-          erase(it->first);
-        }
+          ft::vector<Key> vec; 
+					for (; first != last; first++) 
+						vec.push_back(first->first);
+					for (size_t i = 0; i < vec.size(); i++)
+						erase(vec[i]);
+        
+        // if (first != last)
+        // {
+        //   iterator it = first;    
+        //   erase(++first, last);    stack-overflow using recursion and  AddressSanitizer: heap-use-after-free bidirectional_iterator.hpp:108 using while/for loop due to iterartor invalidity (I think) or rotaions in the tree 
+        //   erase(it->first);
+        // }
       }
     }
     void swap(map<Key, T, Compare, Alloc> &x)
@@ -219,14 +229,14 @@ namespace ft
     {
       Node<value_type> *node = _my_tree.searchNode(_my_tree.base(), x); 
       if (node)
-        return (iterator(node));
+        return (iterator(node, _my_tree.base()));
       return end();
     }
     const_iterator find(const key_type &x) const
     {
       Node<value_type> *node = _my_tree.searchNode(_my_tree.base(), x); 
       if (node)
-        return (const_iterator((const_node_pointer)node));
+        return (const_iterator((const_node_pointer)node, (const_node_pointer)_my_tree.base())); // always set the _tree_root inside iterator to the tree root inside avl
        return end();
     }
     size_type count(const key_type &x) const

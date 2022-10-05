@@ -42,28 +42,19 @@ using namespace std;
 
 int main()
 {
-  std::map<int, std::string> m1;
-  ft::map<int, std::string> ft_m1;
-  for (size_t i = 0; i < 10; i++)
-  {
-    m1.insert(std::make_pair(i, "string2"));
-    ft_m1.insert(ft::make_pair(i, "string2"));
-  }
-  std::map<int, std::string> const m2(m1.rbegin(), m1.rend());
-  ft::map<int, std::string> const ft_m2(ft_m1.rbegin(), ft_m1.rend());
-  cout << m2.rend()->first << endl;
-  cout << ft_m2.rend()->first;
-  // std::string res, ft_res, c_res, c_ft_res;
+            /*------------------ std::maps ---------------------*/
+            std::map<int, std::string> m1;
+            ft::map<int, std::string> ft_m1;
+            for (size_t i = 0; i < 1e6; i++)
+            {
+                m1.insert(std::make_pair(i, "string2"));
+                ft_m1.insert(ft::make_pair(i, "string2"));
+            }
 
-  // for (std::map<int, std::string>::reverse_iterator it = m1.rbegin(); it != m1.rend(); ++it) // fill res from m1
-  //   res += it->second;
-  // for (std::map<int, std::string>::const_reverse_iterator rit = m2.rbegin(); rit != m2.rend(); ++rit) // fill c_res from const m1
-  //   c_res += rit->second;
-
-  // for (ft::map<int, std::string>::reverse_iterator it = ft_m1.rbegin(); it != ft_m1.rend(); ++it) // fill ft_res from ft_m1
-  //   ft_res += it->second;
-  // for (ft::map<int, std::string>::const_reverse_iterator rit = ft_m2.rbegin(); rit != ft_m2.rend(); ++rit) // fill c_ft_res from const ft_m1
-  //   c_ft_res += rit->second;
+            // m1.erase(m1.begin(), m1.end());
+            /*-----------------------------------------------------*/
+            /*------------------ ft::Maps ---------------------*/
+            ft_m1.erase(ft_m1.begin(), ft_m1.end());
 
   return 0;
 }
