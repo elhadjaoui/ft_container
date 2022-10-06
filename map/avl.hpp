@@ -64,7 +64,6 @@ public:
   {
       if (!node)
           return;
-      // _freePair(node->cnt);
       _alloc_node.destroy(node);
       _alloc_node.deallocate(node, 1);
   }
@@ -243,11 +242,7 @@ public:
           root = NULL;
         }
         else // One child case
-        {
-          // temp->parent = root->parent;
           _alloc_node.construct(root, *temp);
-          // root->parent = parent;
-        } 
 
         _freeNode(temp);
       }

@@ -1,8 +1,9 @@
 NAME = container
-CC = c++ -std=c++98 -fsanitize=address -g
+CC = c++ -std=c++98 #-fsanitize=address -g
 FLAGS = -Wall -Wextra -Werror
 RM = rm -rf
 
+MAIN=  tests/map_main.cpp #tests/vector_main.cpp #tests/stack_main.cpp
 
 
 HEADERS = map/avl.hpp map/bidirectional_iterator.hpp map/make_pair.hpp map/map.hpp map/pair.hpp map/node.hpp \
@@ -12,8 +13,8 @@ HEADERS = map/avl.hpp map/bidirectional_iterator.hpp map/make_pair.hpp map/map.h
 
 all : $(NAME)
 
-$(NAME) : main.cpp $(HEADERS)
-			@$(CC) $(FLAGS) main.cpp -o $(NAME)
+$(NAME) : $(MAIN) $(HEADERS)
+			@$(CC) $(FLAGS) $(MAIN) -o $(NAME)
 
 clean :
 

@@ -72,16 +72,16 @@ namespace ft
     key_compare _comare_key;
 
   public:
-    explicit map(const Compare &comp = Compare(), const allocator_type & = allocator_type()) : _my_tree(NULL),_size(0), _comare_key(comp) {}
+    explicit map(const Compare &comp = Compare(), const allocator_type & = allocator_type()) :_size(0), _comare_key(comp) {}
     template <class InputIterator>
-    map(InputIterator first, InputIterator last, const Compare &comp = Compare(), const allocator_type & = allocator_type()) :  _my_tree(NULL), _size(0), _comare_key(comp)
+    map(InputIterator first, InputIterator last, const Compare &comp = Compare(), const allocator_type & = allocator_type()) :  _size(0), _comare_key(comp)
     {
       insert(first, last);
     }
-    void print_tree()
-    {
-      _my_tree.preOrder(_my_tree.base());
-    }
+    // void print_tree()
+    // {
+    //   _my_tree.preOrder(_my_tree.base());
+    // }
     map(const map<Key, T, Compare, allocator_type> &x) : _my_tree(NULL),_size(0)
     {
       insert(x.begin(), x.end());
@@ -178,7 +178,7 @@ namespace ft
       {
         if (find(x) == end())
         {
-          _size--;
+          // _size--;
           return 0;
         }
         _size--;

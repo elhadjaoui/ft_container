@@ -39,22 +39,51 @@ using namespace std;
 
 #include <iostream>
 #include <map>
+typedef std::pair<std::map<int, std::string>::iterator, std::map<int, std::string>::iterator> iter_def;
+typedef ft::pair<ft::map<int, std::string>::iterator, ft::map<int, std::string>::iterator> ft_iter_def;
+typedef std::pair<std::map<int, std::string>::const_iterator, std::map<int, std::string>::const_iterator> const_iter_def;
+typedef ft::pair<ft::map<int, std::string>::const_iterator, ft::map<int, std::string>::const_iterator> ft_const_iter_def;
+// int main()
+// {
+//             iter_def res;
+//             ft_iter_def ft_res;
 
-int main()
+//             std::map<int, std::string> m;
+//             ft::map<int, std::string> ft_m;
+//             for (size_t i = 0; i < 1e6; ++i)
+//             {
+//                 m.insert(std::make_pair(i, "value"));
+//                 ft_m.insert(ft::make_pair(i, "value"));
+//             }
+//             res = m.equal_range(1e5);
+//             ft_res = ft_m.equal_range(1e5);
+//             if  ((ft_res.first->first == res.first->first) && (ft_res.second->first == res.second->first))
+//             {
+//                 cout << "Done\n";
+//             }
+
+//   return 0;
+// }
+
+int main ()
 {
-            /*------------------ std::maps ---------------------*/
-            std::map<int, std::string> m1;
-            ft::map<int, std::string> ft_m1;
-            for (size_t i = 0; i < 1e6; i++)
-            {
-                m1.insert(std::make_pair(i, "string2"));
-                ft_m1.insert(ft::make_pair(i, "string2"));
-            }
+  ft::map<char,int> mymap;
+  ft::map<char,int>::iterator itlow,itup;
 
-            // m1.erase(m1.begin(), m1.end());
-            /*-----------------------------------------------------*/
-            /*------------------ ft::Maps ---------------------*/
-            ft_m1.erase(ft_m1.begin(), ft_m1.end());
+  mymap['a']=20;
+  mymap['b']=40;
+  mymap['c']=60;
+  mymap['d']=80;
+  mymap['e']=100;
+
+  itlow=mymap.lower_bound ('b');  // itlow points to b
+  itup=mymap.upper_bound ('d');   // itup points to e (not d!)
+
+  mymap.erase(itlow,itup);        // erases [itlow,itup)
+
+  // print content:
+  for (ft::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
+    std::cout << it->first << " => " << it->second << '\n';
 
   return 0;
 }
