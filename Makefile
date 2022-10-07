@@ -3,7 +3,7 @@ CC = c++ -std=c++98 #-fsanitize=address -g
 FLAGS = -Wall -Wextra -Werror
 RM = rm -rf
 
-MAIN=  tests/map_main.cpp #tests/vector_main.cpp #tests/stack_main.cpp
+MAIN=   tests/stack_main.cpp #tests/vector_main.cpp #tests/map_main.cpp #tests/stack_main.cpp
 
 
 HEADERS = map/avl.hpp map/bidirectional_iterator.hpp map/make_pair.hpp map/map.hpp map/pair.hpp map/node.hpp \

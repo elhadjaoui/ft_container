@@ -47,11 +47,7 @@ public:
       return 0;
     return height(N->left) - height(N->right);
   }
-  // void _freePair(Content *c)
-  // {
-  //     _allocator.destroy(c);
-  //     _allocator.deallocate(c, 1);
-  // }
+
   void parent_correction(Node<value_type>*&n, Node<value_type> *p)
 	{
 		if (!n)

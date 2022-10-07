@@ -123,7 +123,6 @@ namespace ft
 			else if (n > _capacity)
 			{
 				pointer tmp = _allocator.allocate(n);
-				;
 				if (_buffer)
 				{
 					for (size_type i = 0; i < _size; i++)
